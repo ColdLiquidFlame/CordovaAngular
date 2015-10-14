@@ -1,2 +1,4 @@
-/platforms
-/plugins
+/platforms/*
+!/platforms/platforms.json
+/plugins/*
+!/plugins/fetch.json
