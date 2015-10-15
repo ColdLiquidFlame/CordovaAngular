@@ -1,13 +1,35 @@
 (function() {
   angular
-    .module('app', ['cordova-angular'])
-    .controller('DefaultCtrl', defaultController);
+    .module('app', ['ngRoute', 'cordova-angular'])
+    .config(config)
+    .controller('NetworkInfoCtrl', networkInfoController);
 
-  function defaultController($scope, networkInfo) {
-    $scope.message = "Cordova is not ready.";
+  function networkInfoController($scope, networkInfo) {
+    //$scope.connectionType = "Cordova is not ready.";
 
-    networkInfo.connectionType().then(function(connectionType) {
-      $scope.message = connectionType;
+
+    $scope.connectionType = networkInfo.connectionType();
+    $scope.status = $scope.connectionType === "none" ? "offline" : "online";
+    networkInfo.online(function() {
+      $scope.status = 'online';
+      $scope.connectionType = networkInfo.connectionType();
     });
+
+    networkInfo.offline(function() {
+      $scope.status = 'offline';
+      $scope.connectionType = networkInfo.connectionType();
+    });
+  }
+
+  function config($routeProvider) {
+    $routeProvider
+      .when('/', {
+        controller: networkInfoController,
+        templateUrl: 'app/network-info.html',
+        resolve: {
+          cordovaReady: function(cordova) { return cordova.isReady(); }
+        }
+      })
+      .otherwise('/');
   }
 })();

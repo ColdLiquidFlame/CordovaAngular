@@ -38,18 +38,16 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com; style-src 'self' 'unsafe-inline'; media-src *">
     <title>Cordova Angular Demos</title>
     <link rel="stylesheet" href="css/angular-material.css">
-    <link rel="stylesheet" href="css/angular-material.layout.css">
+    <link rel="stylesheet" href="css/angular-material.layouts.css">
 </head>
 
 <body ng-cloak>
 
-    <div ng-controller="DefaultCtrl">
-        <pre>{{ message }}</pre>
-    </div>
+    <ng-view></ng-view>
 
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" src="js/angular.js"></script>
-    <!--<script type="text/javascript" src="js/angular-route.js"></script>-->
+    <script type="text/javascript" src="js/angular-route.js"></script>
     <!--<script type="text/javascript" src="js/angular-touch.js"></script>-->
     <script type="text/javascript" src="js/angular-material.js"></script>
     <script type="text/javascript" src="app/app.js"></script>

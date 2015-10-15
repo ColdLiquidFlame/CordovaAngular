@@ -2,10 +2,10 @@
   angular
     .module('cordova-angular', [])
     .factory('cordova', cordovaFactory)
-		.factory('networkInfo', networkInfoFactory);
+    .factory('networkInfo', networkInfoFactory);
 
   function cordovaFactory($document, $q) {
-    var isDeviceReady = true;
+    var isDeviceReady = false;
 
     var service = {
       isReady: isReady
@@ -17,13 +17,13 @@
       var deferred = $q.defer();
 
       if (isDeviceReady === true) {
-        deferred.resolve('true');
+        deferred.resolve('device is ready');
       } else {
-        document.addEventListener('deviceready', deviceReadyCallback, false);
+        document.addEventListener('deviceready', deviceReadyCallback);
 
         function deviceReadyCallback() {
           isDeviceReady = true;
-          deferred.resolve();
+          deferred.resolve('device is ready');
         }
       }
 
@@ -31,23 +31,38 @@
     }
   }
 
-	function networkInfoFactory($window, $q, cordova) {
-		var service = {
-			connectionType: connectionType
-		}
+  function networkInfoFactory($window, $q, $rootScope) {
+    var service = {
+      connectionType: connectionType,
+      online: online,
+      offline: offline
+    }
 
-		return service;
+    return service;
 
-		function connectionType () {
-			var deferred = $q.defer();
+    function isNetworkInfoAvailable() {
+      if ($window.navigator.connection) {
+        return true;
+      }
+      return false;
+    }
 
-			cordova
-				.isReady()
-				.then(function() {
-					deferred.resolve(angular.toJson(navigator.connection.type));
-				});
+    function connectionType() {
+      if (isNetworkInfoAvailable()) {
+        return $window.navigator.connection.type;
+      }
+    }
 
-			return deferred.promise;
-		}
-	}åß
+    function online(callback) {
+      document.addEventListener('online', function() {
+        $rootScope.$apply(callback);
+      });
+    }
+
+    function offline(callback) {
+      document.addEventListener('offline', function() {
+        $rootScope.$apply(callback);
+      });
+    }
+  }
 })();
